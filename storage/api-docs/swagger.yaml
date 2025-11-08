@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: PADRÃO DE API
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Autenticação
+    description: Endpoints relacionados à autenticação de usuários
+
+paths:
+  /api/login:
+    post:
+      security: []  # Login não exige token
+      tags:
+        - Autenticação
+      summary: Autenticar usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Validação bem sucedida.
+                  token:
+                    type: string
+                    example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+                  dados:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      nome:
+                        type: string
+                        example: PADRAO
+                      email:
+                        type: string
+                        example: douglas.junior@tintasbrazilian.com.br
+        '401':
+          description: Credenciais inválidas
+
+  /api/usuario:
+    get:
+      tags:
+        - Autenticação
+      summary: Retorna lista de usuários autenticados
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nome:
+                      type: string
+                      example: PADRAO
+                    email:
+                      type: string
+                      example: douglas.junior@tintasbrazilian.com.br
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2025-04-04T14:26:48.240000Z"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2025-04-04T14:26:48.240000Z"
+
+  /api/usuario/{id}:
+    get:
+      tags:
+        - Autenticação
+      summary: Retorna um usuário pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do usuário a ser consultado
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Dados recuperados com sucesso.
+                  dados:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "1"
+                      nome:
+                        type: string
+                        example: PADRAO
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-04-04 14:26:48.240"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-04-04 14:26:48.240"
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Não foi encontrado usuario para este ID
+                  dados:
+                    type: string
+                    nullable: true
+                    example: null

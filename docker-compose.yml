@@ -1,0 +1,19 @@
+services:
+  lumen-api-skeleton:
+    build: .
+    container_name: lumen-api-skeleton
+    ports:
+      - "8010:9000"
+    volumes:
+      - .:/var/www
+    networks:
+      - test
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 8.8.8.8
+
+networks:
+  test:
+    name: test
+    driver: bridge
